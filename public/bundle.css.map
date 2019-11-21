@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "bundle.css",
+  "sources": [
+    "../App.svelte"
+  ],
+  "sourcesContent": [
+    "<script>\n  import animations from \"./components/animModule.js\";\n  import Timeline from \"./components/tools/timeline.svelte\";\n  import Pg from \"./components/shapes/Polygon.svelte\";\n\n  import { onMount } from 'svelte';\n  import anime from 'animejs';\n\n  let selectedAnimation = animations[\"lower third\"];\n\n  let numSides = 2;\n  let curve = 0;\n\n  onMount(() => {\n    let thing = anime({\n      targets: {value: 3},\n      value: 20,\n      duration: 5000,\n      easing: 'easeInOutBack',\n      direction: 'alternate',\n      loop: true,\n      update(anim) {\n        numSides = anim.animations[0].currentValue;\n      }\n    })\n  })\n</script>\n\n<style>\n  #main-display {\n    border: 2px solid #000000;\n    background-color: #ffffff;\n  }\n  main {\n    font-family: sans-serif;\n    text-align: center;\n  }\n</style>\n\n<main>\n\n  <select bind:value={selectedAnimation}>\n    {#each Object.keys(animations) as anim}\n      <option value=\"{animations[anim]}\">{anim}</option>\n    {/each}\n  </select>\n  {#each Object.entries(selectedAnimation.props) as [propName, defValue]}\n    <br/>\n    <span>{propName}:</span>\n    <input bind:value={selectedAnimation.props[propName]} />\n  {/each}\n  \n  <br/>\n  <span>num of sides</span>\n  <input type=\"number\" bind:value={numSides}/>\n  <br/>\n  <span>curvature</span>\n  <input type=\"number\" bind:value={curve}/>\n\n  <br/>\n  <svg id=\"main-display\" width=\"500\" height=\"500\">\n    <svelte:component \n      this={selectedAnimation.component} \n      parentWidth=\"{500}\"\n      parentHeight=\"{500}\"\n      {...selectedAnimation.props}\n    />\n\n    <Pg width={100} sides={numSides} curve={curve} style=\"stroke: #000; fill:transparent; transform: translateX(50px) translateY(50px)\" />\n\n  </svg>\n  \n  <br/>\n  <Timeline animFunction={selectedAnimation.animation}/>\n</main>"
+  ],
+  "names": [],
+  "mappings": "AA6BE,aAAa,cAAC,CAAC,AACb,MAAM,CAAE,GAAG,CAAC,KAAK,CAAC,OAAO,CACzB,gBAAgB,CAAE,OAAO,AAC3B,CAAC,AACD,IAAI,cAAC,CAAC,AACJ,WAAW,CAAE,UAAU,CACvB,UAAU,CAAE,MAAM,AACpB,CAAC"
+}
